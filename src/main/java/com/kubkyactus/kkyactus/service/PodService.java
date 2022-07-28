@@ -2,14 +2,15 @@ package com.kubkyactus.kkyactus.service;
 
 
 import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.models.V1Pod;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -28,16 +29,13 @@ public class PodService {
             return Collections.emptyList();
         }
         try {
-            List<V1Pod> pods = apiClient.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null, null)
-                    .getItems();
-            List<String> podsNames = new ArrayList<>();
-
-            pods.forEach(pod -> {
-                if (pod.getMetadata() != null) {
-                    podsNames.add(pod.getMetadata().getName());
-                }
-            });
-            return podsNames;
+            return apiClient.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null, null)
+                    .getItems()
+                    .stream()
+                    .map(pod -> Optional.ofNullable(pod.getMetadata())
+                            .map(V1ObjectMeta::getName)
+                            .orElse(""))
+                    .collect(Collectors.toList());
         }
         catch (Exception e) {
             log.error("Error getting list of pods", e);
