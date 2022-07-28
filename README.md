@@ -34,5 +34,6 @@ At this point just run the Spring application
 
 Go to http://localhost:8080/ and you should see something like a few kyactus that represent
 the pods names in your k8s cluster
+![image_2022-07-28_17-38-43](https://user-images.githubusercontent.com/67358859/181584321-65b4a66a-fcf5-4ffe-b3fa-2ba57f36f8bd.png)
 
 
